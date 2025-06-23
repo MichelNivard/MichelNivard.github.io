@@ -1,0 +1,48 @@
+---
+title: "About"
+image: profile.jpg
+about:
+  template: solana
+---
+
+Hi there! I’m Michel G. Nivard a Dutch psychologist turned genetic epidemiologist, now happily based at the University of Bristol. I spend my days tinkering with huge DNA datasets, trying to work out how our genes and environments team up to shape behaviour and mental-health.  Below is the “about-page” version of my academic résumé.
+
+## What I’m Doing Now
+
+I hold a chair in **Genetic Epidemiology** at Bristol Medical School’s Population Health Sciences and its Integrative Epidemiology Unit (IEU). My lab builds and applies methods, most famously **GenomicSEM**, an open-source R package that lets researchers pick apart the shared genetics of complex traits ([github.com][1]). Day-to-day I juggle genome-wide association studies (GWAS), gene-by-environment models, and causal inference methods for the social sciences.
+
+## How I Got Here
+
+* **Bachelors and Masters in pyschological methos** My very early academic education, that is after dropping out of an AI undergrad program,was in psychological methods, where I learned to appriciate a good latent variable, or item response model, and learned to think of every problem as a measurement problem and of strcutura equatino modelign as the path to every solution. Lets jsut say I got good instinct and never was able to shake the bad instincts. 
+
+* **PhD & early career at Vrije Universiteit Amsterdam (VU)**—I cut my teeth in statistical genetics during a PhD in Biological Psychology and stuck around as post-doc, assistant and then associate professor.
+
+* **Bristol move**—In 2024 I swapped Amsterdam's canals for Clifton Downs, joining the IEU to scale up multivariate genetics and mentor the next wave of method-geeks.
+
+## Research in a Nutshell
+
+1. **Multivariate & longitudinal genetics** – Using GenomicSEM and allied tools to map shared genetic influences across psychiatric traits, cognition, and lifestyle ([github.com][1]).
+2. **Gene-environment interplay** – From in-utero famine effects on BMI to how retirement frees our internal body-clock, I like models where context matters.
+3. **Assortative mating & social genetics** – Recent work explores how genetics nudges partner choice and shapes social networks ([pubmed.ncbi.nlm.nih.gov][2]).
+
+## Highlights I’m Proud Of
+
+
+* **Early-career Appriciation**: I was awarded the Behavior Genetics Association’s Fuller & Scott Award ([research.vu.nl][4]) and a **Jacobs Foundation Research Fellowship** ([jacobsfoundation.org][5]).
+* **Community builder**: co-founded the **Genetics Network Amsterdam (GENE)** to connect social-science geneticists across Dutch universities ([geneticsnetworkamsterdam.org][6]).
+
+
+## Staying in Touch
+
+* **Email:** m.g.nivard @ bristol.ac.uk 
+* **GitHub:** github.com/MichelNivard (for GenomicSEM & assorted scripts) ([github.com][3])
+
+*Last updated: 23 June 2025.*
+
+
+[1]: https://github.com/GenomicSEM/GenomicSEM "GenomicSEM - GitHub"
+[2]: https://pmc.ncbi.nlm.nih.gov/articles/PMC11569812/ "More than Nature and Nurture, indirect genetic effects on children’s academic achievement are consequences of dynastic social processes"
+[3]: https://scholar.google.com/citations?hl=nl&user=omRGPjUAAAAJ "‪Michel Nivard‬ - ‪Google Scholar‬"
+[4]: https://research.vu.nl/en/prizes/behaviour-genetics-association-16th-annual-jl-fuller-amp-jpscott-"Behaviour genetics association 16th annual J.L. Fuller & J.P.Scott ..."
+[5]: https://jacobsfoundation.org/fellows/jacobs-foundation-research-fellowship-en/michel-nivard/ "Michel Nivard - Jacobs Foundation"
+[6]: https://www.geneticsnetworkamsterdam.org/ "Genetics Network Amsterdam: Home"

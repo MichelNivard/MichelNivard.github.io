@@ -1,0 +1,30 @@
+project:
+  type: website
+  output-dir: docs
+ 
+website:
+  title: "Michel.science"
+  site-url: https://michelnivard.github.io
+  description: "Michel Nivard's Academic Home"
+  navbar:
+    left:
+      - index.qmd
+      - blog.qmd
+      - self-published.qmd
+      - text: "Online textbooks"
+        menu:
+        - text: Sequence Language Models & Deep Learning in Genomics
+          href: https://michelnivard.github.io/biobook/
+      - about.qmd
+    right:
+      - icon: github
+        href: https://github.com/
+      - text: "{{< iconify fa6-brands:bluesky >}}"
+        href: https://bsky.app/profile/michelnivard.bsky.social
+format:
+  html:
+    theme:
+      - cosmo
+      - style.scss
+
+
