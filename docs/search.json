@@ -1,10 +1,17 @@
 [
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
+    "objectID": "blog.html",
+    "href": "blog.html",
+    "title": "Blog",
     "section": "",
-    "text": "Hi there! I’m Michel G. Nivard a Dutch psychologist turned genetic epidemiologist, now happily based at the University of Bristol. I spend my days tinkering with huge DNA datasets, trying to work out how our genes and environments team up to shape behaviour and mental-health. Below is the “about-page” version of my academic résumé."
+    "text": "Post With Code\n\n\n\n\n\n\n\n\n\n\n\nJun 23, 2025\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\n\n\n\n\nJun 20, 2025\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Home",
+    "section": "",
+    "text": "Welcome! I’m Michel Nivard, a researcher at the University of Bristol working at the intersection of psychology, genetics, and data science. This site is a home for my work, ideas, and has a special bleeding edge preprint repository of my most cutting edge, off-reservation, experiments (Unreviewed Collection), ranging from causal models and psychiatric genetics to protein folding and machine learning. I care deeply about making complex science accessible, whether through interactive visualizations, open-source tools, or the occasional grumpy blog post and a textbook I am developing on deeplearning for genomics.\nBelow are some dynamically generated stats about my behavior:\n\nBluesky posts\nI am terminally online…\n\n\n\n\n\n\n\n\n\n\n\nGithub Activity\nI do on occasion have a coding fit…\n\n\n\n\n\n\n\n\n\n\n\nCitations (OpenAlex)\nPeopel cite my work, but honestly who knows maybe they are trashing it…"
   },
   {
     "objectID": "posts/welcome/index.html",
@@ -21,25 +28,18 @@
     "text": "This is a post with executable code."
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "website",
-    "section": "",
-    "text": "Post With Code\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nJun 23, 2025\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nJun 20, 2025\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "blog.html",
-    "href": "blog.html",
-    "title": "Blog",
-    "section": "",
-    "text": "Post With Code\n\n\n\n\n\n\n\n\n\n\n\nJun 23, 2025\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\n\n\n\n\nJun 20, 2025\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
-  },
-  {
     "objectID": "self-published.html",
     "href": "self-published.html",
-    "title": "Web-Publications",
+    "title": "The Unreviewed Collection",
     "section": "",
-    "text": "This is my private pre-print server for articles I do not currently intend to publish (I lack the time or their simply out of scope) but also feel are sufficiently complete that they can be of value to others. These publicaions will have a doi through rogue-scholar, please cite them appropriately. Editors. feel free to reach out if you see value in specific arcitles and want me to submit them.\n\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "No matching items"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "Hi there! I’m Michel G. Nivard a Dutch psychologist turned genetic epidemiologist, now happily based at the University of Bristol. I spend my days tinkering with huge DNA datasets, trying to work out how our genes and environments team up to shape behaviour and mental-health. Below is the “about-page” version of my academic résumé."
   },
   {
     "objectID": "about.html#what-im-doing-now",

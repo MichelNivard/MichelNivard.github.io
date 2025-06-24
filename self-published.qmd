@@ -1,5 +1,6 @@
 ---
-title: "Web-Publications"
+title: "The Unreviewed Collection"
+subtitle: "A private pre-print server for bleeding edge ideas that I can't fit anywhere, or have no time for. These are public, citable, potentially valuable, but not peer-reviewed."
 listing:
   contents: articles
   sort: "date desc"
@@ -9,7 +10,7 @@ listing:
   filter-ui: false
   feed: true
 page-layout: full
-title-block-banner: true
+title-block-banner: "#4097C2"
+title-block-banner-color: white
 ---
 
-This is my private pre-print server for articles I do not currently intend to publish (I lack the time or their simply out of scope) but also feel are sufficiently complete that they can be of value to others. These publicaions will have a doi through rogue-scholar, please cite them appropriately. Editors. feel free to reach out if you see value in specific arcitles and want me to submit them.

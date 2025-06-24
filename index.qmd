@@ -2,4 +2,309 @@
 title: "Home"
 ---
 
+Welcome! I'm Michel Nivard, a researcher at the University of Bristol working at the intersection of psychology, genetics, and data science. This site is a home for my work, ideas, and has a special bleeding edge preprint repository of my most cutting edge, off-reservation, experiments ([Unreviewed Collection](self-published.html)), ranging from causal models and psychiatric genetics to protein folding and machine learning. I care deeply about making complex science accessible, whether through interactive visualizations, open-source tools, or the occasional grumpy [blog](blog.html) post and a textbook I am developing on [deeplearning for genomics](https://michelnivard.github.io/biobook/).
 
+```{r}
+#| label: activity-calendars-last-year
+#| echo: false
+#| message: false
+#| warning: false
+# install.packages(c("httr","jsonlite","dplyr","tidyr","lubridate",
+#                    "ggplot2","patchwork","purrr","progress"))
+
+library(httr);    library(jsonlite); library(dplyr);  library(tidyr)
+library(lubridate); library(purrr);  library(ggplot2); library(patchwork)
+library(progress)
+
+months_back <- 12                    # ← single knob for time-window
+cutoff      <- today() - months(months_back)
+
+## ───────── helpers ─────────
+daily_seq <- function(a, b) seq.Date(a, b, by = "day")
+`%||%`    <- function(a, b) if (is.null(a)) b else a
+
+calendarise <- function(df) {
+  if (nrow(df) == 0)
+    return(tibble(week = integer(), dow = integer(), n = integer()))
+
+  ref_mon <- floor_date(min(df$date), "week", week_start = 1)
+  df %>%
+    complete(date = daily_seq(ref_mon, today()), fill = list(n = 0)) %>%
+    mutate(week = as.integer((date - ref_mon) / ddays(7)),
+           dow  = wday(date, week_start = 1))
+}
+
+## ───────── tiny dot legend ─────────
+make_dot_legend <- function(col) {
+  stops <- seq(0, 1, length.out = 4)
+  pal   <- scales::gradient_n_pal(c("#f0f0f0", col))(stops)
+
+  ggplot(data.frame(x = 1:4, y = 1, col = pal)) +
+    geom_point(aes(x, y, fill = col), shape = 21,
+               size = 4, colour = "white", stroke = .2) +
+    scale_fill_identity() +
+    annotate("text", x = 0.2, y = 1, label = "Less",
+             hjust = 1, vjust = .5, size = 3) +
+    annotate("text", x = 4.8, y = 1, label = "More",
+             hjust = 0, vjust = .5, size = 3) +
+    coord_cartesian(xlim = c(0.2, 5), clip = "off") +   # ← NEW
+    theme_void() +
+    theme(plot.margin = margin(0, 0, 0, 0))              # ← keeps it snug
+}
+
+
+## ───────── calendar plot ─────────
+plot_cal <- function(cal, title, base_col) {
+  if (nrow(cal) == 0)
+    return(ggplot() + theme_void() +
+           ggtitle(title, subtitle = "(no data)"))
+
+  ## reconstruct actual dates
+  cal$date <- (floor_date(today(), "week", week_start = 1) -
+                 (max(cal$week) - cal$week) * 7 + (cal$dow - 1)) |>
+              as.Date(origin = "1970-01-01")
+
+  ## month ticks
+  month_df <- cal %>%
+    group_by(month = floor_date(date, "month")) %>%
+    slice_min(order_by = week, n = 1) %>%
+    ungroup() %>%
+    distinct(month, week)
+
+  ## log₂ colour
+  cal$fill <- (cal$n)^.75
+  max_fill <- max(cal$fill)
+  brks     <- seq(0, max_fill, length.out = 5)
+
+  ggplot(cal, aes(week, 8 - dow)) +
+    geom_point(aes(fill = fill), shape = 21, size = 3,
+               colour = "white", stroke = .2) +
+    scale_fill_gradient(
+      limits = c(0, max_fill),
+      breaks = brks,
+      labels = round(2^brks - 1),
+      low    = "#f0f0f0", high = base_col,
+      guide  = "none"
+    ) +
+    scale_y_continuous(
+      breaks = 1:7,
+      labels = c("Mon","Tue","Wed","Thu","Fri","Sat","Sun")
+    ) +
+    scale_x_continuous(
+      expand = c(0.02, 0),
+      breaks = month_df$week,
+      labels = format(month_df$month, "%b")
+    ) +
+    labs(title = title, x = NULL, y = NULL) +
+    theme_minimal(base_size = 9) +
+    theme(
+      panel.grid      = element_blank(),
+      axis.text.x     = element_text(hjust = 0, face = "bold", size = 8),
+      axis.text.y     = element_text(size = 7),
+      axis.ticks      = element_blank(),
+      plot.title      = element_text(face = "bold", hjust = 0,
+                                     margin = margin(b = 10))
+    )
+}
+
+## ──────────── GitHub public contributions (patched) ────────────
+fetch_github <- function(user, token) {
+  qry <- '
+  query($login:String!, $from:DateTime!, $to:DateTime!){
+    user(login:$login){
+      contributionsCollection(from:$from, to:$to){
+        contributionCalendar{
+          weeks{
+            contributionDays{
+              date
+              contributionCount
+            }
+          }
+        }
+      }
+    }
+  }'
+  body <- list(
+    query     = qry,
+    variables = list(
+      login = user,
+      from  = format(cutoff, "%Y-%m-%dT%H:%M:%SZ"),
+      to    = format(today(), "%Y-%m-%dT%H:%M:%SZ")
+    )
+  )
+
+  js <- httr::POST(
+          "https://api.github.com/graphql",
+          httr::add_headers(Authorization = paste("Bearer", token),
+                            `User-Agent`   = "R-calendar"),
+          body = body, encode = "json"
+        ) |>
+        httr::content(as = "parsed", type = "application/json")
+
+  weeks <- js$data$user$contributionsCollection$contributionCalendar$weeks
+  if (length(weeks) == 0)
+    return(tibble(date = as_date(character()), n = integer()))
+
+  # turn the nested list into a tibble BEFORE dplyr verbs
+  days <- purrr::map(weeks, "contributionDays") |> purrr::flatten()
+  df   <- tibble(
+           date = as_date(purrr::map_chr(days, "date")),
+           n    = as.integer(purrr::map_chr(days, "contributionCount"))
+         )
+
+  df |> dplyr::filter(date >= cutoff, n > 0)
+}
+
+## ──────────── Bluesky posts ────────────
+fetch_bluesky <- function(handle) {
+  if (handle == "")
+    return(tibble(date = as_date(character()), n = integer()))
+
+  bases <- c(
+    "https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed",
+    "https://bsky.social/xrpc/app.bsky.feed.getAuthorFeed"
+  )
+  posts <- list()
+  for (base in bases) {
+    cursor <- NULL
+    repeat {
+      res <- RETRY("GET", base,
+                   query = list(actor = handle, limit = 100, cursor = cursor),
+                   times = 3, pause_min = .6, terminate_on = c(400, 404))
+      if (status_code(res) >= 400) break
+      js  <- content(res, as = "parsed", type = "application/json")
+      posts  <- c(posts, js$feed)
+      if (!length(js$feed) ||
+          min(as_datetime(map_chr(js$feed, c("post","indexedAt")))) < cutoff ||
+          is.null(js$cursor)) break
+      cursor <- js$cursor
+    }
+    if (length(posts)) break
+  }
+  if (!length(posts))
+    return(tibble(date = as_date(character()), n = integer()))
+  tibble(date = as_date(map_chr(posts, c("post","indexedAt")))) |>
+    filter(date >= cutoff) |>
+    count(date, name = "n")
+}
+
+## ──────────── OpenAlex citation events (new method) ────────────
+fetch_citations <- function(author_id) {
+  if (author_id == "")
+    return(tibble(date = as_date(character()), n = integer()))
+
+  # 1 · author’s works
+  works_url <- paste0(
+    "https://api.openalex.org/works?filter=author.id:", author_id,
+    "&per-page=200"
+  )
+  works <- list()
+  repeat {
+    js <- GET(works_url) |> content(as = "parsed", type = "application/json")
+    works <- c(works, js$results)
+    if (is.null(js$meta$next_cursor)) break
+    works_url <- paste0(
+      "https://api.openalex.org/works?filter=author.id:", author_id,
+      "&per-page=200&cursor=", URLencode(js$meta$next_cursor, TRUE)
+    )
+  }
+  work_ids <- sub("^https?://openalex\\.org/", "", map_chr(works, "id"))
+
+  # 2 · citing works via filter=cites:
+  tally <- new.env(parent = emptyenv())
+  pb <- progress_bar$new(
+    total = length(work_ids), clear = FALSE,
+    format = "Citations [:bar] :current/:total :percent eta: :eta"
+  )
+
+  for (wid in work_ids) {
+    base <- paste0(
+      "https://api.openalex.org/works",
+      "?filter=cites:", wid,
+      ",from_publication_date:", format(cutoff, "%Y-%m-%d"),
+      ",to_publication_date:",   format(today(), "%Y-%m-%d"),
+      "&per-page=200"
+    )
+    url <- base
+    repeat {
+      js <- RETRY("GET", url, times = 3, pause_min = .8,
+                  terminate_on = c(400, 404)) |>
+            content(as = "parsed", type = "application/json")
+      map_chr(js$results, "publication_date") |>
+        keep(~ .x != "" && !is.null(.x)) |>
+        map(as_date) |>
+        walk(\(d) tally[[as.character(d)]] <-
+                     (tally[[as.character(d)]] %||% 0) + 1)
+      if (is.null(js$meta$next_cursor)) break
+      url <- paste0(base, "&cursor=",
+                    URLencode(js$meta$next_cursor, TRUE))
+    }
+    pb$tick()
+  }
+
+  if (!length(ls(tally)))
+    return(tibble(date = as_date(character()), n = integer()))
+
+  tibble(date = as_date(names(tally)),
+         n    = as.integer(unlist(as.list(tally)))) |>
+    arrange(date)
+}
+
+## ───────── fetch, build and show ─────────
+gh_cal  <- calendarise(fetch_github(Sys.getenv("GH_USER"),  Sys.getenv("GH_TOKEN")))
+bs_cal  <- calendarise(fetch_bluesky(Sys.getenv("BSKY_HANDLE")))
+cit_cal <- calendarise(fetch_citations(Sys.getenv("OA_ID")))
+
+legend_blue  <- make_dot_legend("#1E90FF")
+legend_green <- make_dot_legend("#2E8B57")
+legend_red   <- make_dot_legend("#CC0033")
+
+space <- patchwork::plot_spacer()
+
+```
+
+Below are some dynamically generated stats about my behavior:
+
+### Bluesky posts
+
+I am terminally online...
+
+```{r}
+#| label: bluesky-plot 
+#| echo: false
+#| message: false
+#| fig-width: 9
+#| fig-height: 2
+
+plot_cal(bs_cal,  "",        "#1E90FF") 
+```
+
+### Github Activity
+
+I do on occasion have a coding fit...
+
+```{r}
+#| label: git-plot 
+#| echo: false
+#| message: false
+#| fig-width: 9
+#| fig-height: 2
+
+plot_cal(gh_cal,  "",        "#2E8B57")
+```
+
+### Citations (OpenAlex)
+
+Peopel cite my work, but honestly who knows maybe they are trashing it...
+
+```{r}
+#| label: cite-plot
+#| echo: false
+#| message: false
+#| warning: false 
+#| fig-width: 9
+#| fig-height: 2
+
+plot_cal(cit_cal,  "",        "#CC0033") 
+
+```
